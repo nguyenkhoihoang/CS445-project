@@ -37,6 +37,8 @@ def render_set(model_path, name, iteration, views, gaussians, pipeline, backgrou
     for idx, view in enumerate(tqdm(views, desc="Rendering progress")):
         rendering = render(view, gaussians, pipeline, background, use_trained_exp=train_test_exp, separate_sh=separate_sh)["render"]
         gt = view.original_image[0:3, :, :]
+        if view.alpha_mask is not None:
+            gt = gt * view.alpha_mask + background[:, None, None] * (1 - view.alpha_mask)
 
         if args.train_test_exp:
             rendering = rendering[..., rendering.shape[-1] // 2:]
