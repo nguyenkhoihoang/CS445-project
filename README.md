@@ -46,49 +46,8 @@ loss = L1(image, gt_image)       # floaters now penalized!
 | Gaussians | 239,886 | 297,788 | +24% |
 | Render Speed | 3.7 it/s | 5.8 it/s | +57% |
 
-![Bug Fix Comparison](output/figures/fig5_bugfix.png)
-*Left: Original training with floater artifacts (PSNR: 14.27). Center: Our fix with clean background (PSNR: 35.94). Right: Ground truth.*
-
-### Why More Gaussians but Faster?
 
 The fixed model uses 24% more Gaussians yet renders 57% faster. The buggy model's floater Gaussians are large and overlapping, causing expensive per-pixel compositing. The fixed model allocates smaller, well-placed Gaussians to actual scene content.
-
----
-
-## Ablation Studies
-
-### Spherical Harmonics Degree
-
-![SH Ablation](output/figures/fig7_sh_ablation.png)
-
-| SH Degree | PSNR | SSIM | Gaussians |
-|:---:|:---:|:---:|:---:|
-| 0 (diffuse) | 34.84 | 0.981 | 326K |
-| 1 | 35.47 | 0.983 | 314K |
-| 2 | 35.78 | 0.983 | 305K |
-| 3 (default) | 35.94 | 0.983 | 298K |
-
-Higher SH improves quality while using *fewer* Gaussians — better color modeling reduces the need for additional geometry.
-
-### Training Convergence
-
-![Convergence](output/figures/fig10_convergence.png)
-
-The model reaches 96% of final quality (33.6 dB) by iteration 7K (~5 min on A100). The remaining 23K iterations yield only +2.3 dB.
-
-### Densification Threshold
-
-![Densification](output/figures/fig11_densify_ablation.png)
-
-| Threshold | PSNR | Gaussians | Model Size |
-|:---:|:---:|:---:|:---:|
-| 0.0001 (aggressive) | 36.34 | 744K | 176 MB |
-| 0.0002 (default) | 35.91 | 299K | 71 MB |
-| 0.0004 | 34.54 | 113K | 27 MB |
-| 0.0008 (conservative) | 32.06 | 42K | 10 MB |
-
-The default threshold (0.0002) sits at the "knee" — halving it gains only +0.43 dB but costs 2.5x more Gaussians.
-
 
 ---
 
@@ -145,6 +104,8 @@ python metrics.py -m output/lego
 | [`render.py`](render.py) | Rendering script (with GT compositing fix) |
 | [`run_ablations.sh`](run_ablations.sh) | Ablation study automation script |
 | [`output/figures/`](output/figures/) | All generated figures |
+
+Real data folder: [Drive Link](https://drive.google.com/drive/folders/10qwBJsxlxle76cUn8wSYVPgIsfOYbLjv?usp=drive_link)
 
 ---
 
